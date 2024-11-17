@@ -2,8 +2,12 @@ import AddNoteButton from "@/components/add-note-button";
 import Avatar from "@/components/avatar";
 import StarNote from "@/components/star-note";
 import { router, Stack } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { Note } from "./add-note";
+import Button from "@/components/button";
+import React from "react";
 
 const mockStarredNotes = [
   {
@@ -28,7 +32,18 @@ const mockStarredNotes = [
   },
 ];
 export default function Index() {
+  const db = useSQLiteContext();
   const [starredNotes, setStarredNotes] = useState(mockStarredNotes);
+
+  const seeNoteFromDb = async () => {
+    try {
+      console.log("seeNoteFromDb");
+      const notes = await db.getAllAsync<any>("SELECT * FROM note");
+      console.log(notes);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const onAddNewNote = () => {
     router.push("./add-note", { relativeToDirectory: false });
@@ -44,6 +59,10 @@ export default function Index() {
       />
 
       <View style={styles.homePageContainer}>
+        <Button
+          text="See what going on in db"
+          buttonClick={() => seeNoteFromDb()}
+        ></Button>
         <Text>Starred Notes</Text>
         <ScrollView
           contentContainerStyle={styles.contentContainer}

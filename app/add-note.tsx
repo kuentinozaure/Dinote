@@ -12,8 +12,10 @@ import { NoteSummarized, summarizeNote } from "@/ai/summarize";
 import React from "react";
 import Button from "@/components/button";
 import { randomUUID } from "expo-crypto";
+import { useSQLiteContext } from "expo-sqlite";
+import { insertNote } from "@/db/db";
 
-interface Note {
+export interface Note {
   uri: string;
   fileName: string;
   textContent: string;
@@ -28,6 +30,7 @@ const API_URL =
   "https://innovative-jacinta-quentin-s-hobbys-d50ed36b.koyeb.app";
 
 export default function AddNotePage() {
+  const db = useSQLiteContext();
   const [note, setNote] = useState<Note>({
     title: "",
     description: "",
@@ -153,6 +156,7 @@ export default function AddNotePage() {
 
   const onSaveNote = () => {
     // TODO: Save the note to the database
+    insertNote(db, note);
     router.back();
   };
 
