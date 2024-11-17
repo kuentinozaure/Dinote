@@ -16,7 +16,7 @@ export default function FileUploader({ onFileUploadPress }: FileUploaderProps) {
       <Text style={styles.formatSupportedText}>
         Pdf format only; more extension soon 👀
       </Text>
-      <Button text="Add your note here" buttonClick={() => onClick()}></Button>
+      <Button text="Browse File" buttonClick={() => onClick()}></Button>
     </View>
   );
 }

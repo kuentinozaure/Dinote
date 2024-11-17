@@ -35,7 +35,7 @@ export default function AddNotePage() {
     <>
       <Stack.Screen
         options={{
-          headerTitle: (props) => <Text>Home</Text>,
+          headerTitle: "",
         }}
       />
       <View style={styles.container}>
@@ -54,7 +54,7 @@ export default function AddNotePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 8,
+    gap: 16,
     margin: 16,
     flexDirection: "column",
   },
