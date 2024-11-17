@@ -2,11 +2,22 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface UploadFileProps {
   fileName: string;
+  fileUploadClick: () => void;
 }
 
-export default function UploadFile({ fileName }: UploadFileProps) {
+export default function UploadFile({
+  fileName,
+  fileUploadClick,
+}: UploadFileProps) {
+  const onPressUploadFile = () => {
+    fileUploadClick();
+  };
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => onPressUploadFile()}
+    >
       <View style={styles.leftContainer}>
         <Text style={styles.dinoText}>🦖</Text>
         <View style={styles.textContainer}>
@@ -14,7 +25,10 @@ export default function UploadFile({ fileName }: UploadFileProps) {
           <Text style={styles.infoText}>✨ Ready to be dinotized ✨</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.start}>
+      <TouchableOpacity
+        style={styles.start}
+        onPress={() => onPressUploadFile()}
+      >
         <View style={styles.startButton}></View>
       </TouchableOpacity>
     </TouchableOpacity>
