@@ -1,21 +1,34 @@
 import { Stack } from "expo-router";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { pickSingle } from "react-native-document-picker";
+import { useState } from "react";
+import FileUploader from "@/components/file-uploader";
+import UploadFile from "@/components/upload-file";
 
+interface Note {
+  uri: string;
+  name: string;
+}
 export default function AddNotePage() {
-  const onClick = async () => {
-    console.log(FileSystem.documentDirectory);
+  const [document, setDocument] = useState<Note | null>(null);
 
-    const dir = await FileSystem.readDirectoryAsync(
-      FileSystem.documentDirectory || ""
-    );
-    console.log(dir);
-
-    const data = await pickSingle({
+  const onFileUploadPress = async () => {
+    const fileFromFinder = await pickSingle({
       allowMultiSelection: false,
     });
-    console.log(data);
+
+    const fileName = FileSystem.documentDirectory || "" + fileFromFinder.name;
+
+    const fileStoreOnDevice = await FileSystem.createDownloadResumable(
+      fileFromFinder.uri,
+      fileName
+    );
+
+    setDocument({
+      uri: fileName,
+      name: fileFromFinder.name || "",
+    });
   };
 
   return (
@@ -25,11 +38,14 @@ export default function AddNotePage() {
           headerTitle: (props) => <Text>Home</Text>,
         }}
       />
-
       <View style={styles.container}>
-        <Text>🦖</Text>
+        <FileUploader
+          onFileUploadPress={() => onFileUploadPress()}
+        ></FileUploader>
 
-        <Button title="Click" onPress={() => onClick()}></Button>
+        {document && document.uri && (
+          <UploadFile fileName={document.name}> </UploadFile>
+        )}
       </View>
     </>
   );
@@ -38,6 +54,8 @@ export default function AddNotePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    gap: 8,
+    margin: 16,
+    flexDirection: "column",
   },
 });
