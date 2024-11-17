@@ -23,6 +23,7 @@ export interface Note {
   description: string;
   tag: string;
   id: string;
+  timeStamp: number;
 }
 
 // TODO: Move this to a config file
@@ -39,6 +40,7 @@ export default function AddNotePage() {
     fileName: "",
     textContent: "",
     id: "",
+    timeStamp: 0,
   });
   const [noteGenerated, setNoteGenerated] = useState<NoteSummarized | null>(
     null
@@ -150,14 +152,18 @@ export default function AddNotePage() {
         description: noteGenerated?.description[index || 0] || "",
         tag: noteGenerated?.tags[index || 0] || "",
         id: randomUUID(),
+        timeStamp: Date.now(),
       };
     });
   };
 
   const onSaveNote = () => {
-    // TODO: Save the note to the database
-    insertNote(db, note);
-    router.back();
+    try {
+      insertNote(db, note);
+      router.back();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -213,13 +219,6 @@ export default function AddNotePage() {
             </>
           )}
         </View>
-
-        <View>
-          <Text>Selected note</Text>
-
-          <Text>{note.id}</Text>
-        </View>
-
         {note.id.length > 0 && (
           <Button
             text="Save this note"

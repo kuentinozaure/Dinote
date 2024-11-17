@@ -3,43 +3,36 @@ import Avatar from "@/components/avatar";
 import StarNote from "@/components/star-note";
 import { router, Stack } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { useState } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { Note } from "./add-note";
 import Button from "@/components/button";
 import React from "react";
 
-const mockStarredNotes = [
-  {
-    title: "Math lesson of 12/04/2024",
-    description: "The lesson talk about the Thales algorithm",
-    tag: "#Lesson",
-  },
-  {
-    title: "French lesson of 12/04/2024",
-    description: "The lesson talk about the Molieres",
-    tag: "#Lesson",
-  },
-  {
-    title: "Paris trip for next summer",
-    description: "Talk about your next trip in Paris",
-    tag: "#Trip",
-  },
-  {
-    title: "Montreal house renting market",
-    description: "Talk about the renting market in Montreal",
-    tag: "#Analysis",
-  },
-];
 export default function Index() {
   const db = useSQLiteContext();
-  const [starredNotes, setStarredNotes] = useState(mockStarredNotes);
+  const [starredNotes, setStarredNotes] = useState<Note[]>([]);
 
-  const seeNoteFromDb = async () => {
+  useEffect(() => {
+    getNoteFromDb();
+
+    // Optional: Cleanup function when the component unmounts
+    return () => {
+      console.log("Component unmounted");
+    };
+  }, []);
+
+  const getNoteFromDb = async () => {
     try {
-      console.log("seeNoteFromDb");
-      const notes = await db.getAllAsync<any>("SELECT * FROM note");
-      console.log(notes);
+      const notes = await db.getAllAsync<Note>("SELECT * FROM note");
+      console.log("notes", notes);
+      setStarredNotes(notes);
     } catch (e) {
       console.log(e);
     }
@@ -47,6 +40,16 @@ export default function Index() {
 
   const onAddNewNote = () => {
     router.push("./add-note", { relativeToDirectory: false });
+  };
+
+  const calculateDate = (timeStamp: number) => {
+    const date = new Date(timeStamp);
+
+    const day = date.getDate();
+    // Month in letter
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -59,10 +62,6 @@ export default function Index() {
       />
 
       <View style={styles.homePageContainer}>
-        <Button
-          text="See what going on in db"
-          buttonClick={() => seeNoteFromDb()}
-        ></Button>
         <Text>Starred Notes</Text>
         <ScrollView
           contentContainerStyle={styles.contentContainer}
@@ -78,6 +77,19 @@ export default function Index() {
             />
           ))}
         </ScrollView>
+
+        {starredNotes.map((note, index) => (
+          <TouchableOpacity style={styles.noteContainer}>
+            <View style={styles.dateAndTagContainer}>
+              <Text style={styles.dateText}>
+                {calculateDate(note.timeStamp)}
+              </Text>
+              <Text style={styles.tagText}>{note.tag}</Text>
+            </View>
+            <Text style={styles.titleText}>{note.title}</Text>
+            <Text style={styles.descriptionText}>{note.description} </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <AddNoteButton plusButtonClicked={onAddNewNote} />
@@ -101,5 +113,44 @@ const styles = StyleSheet.create({
   scrollContainer: {
     height: 0,
     maxHeight: 200,
+  },
+
+  noteContainer: {
+    backgroundColor: "#f5f7fb",
+    borderRadius: 8,
+    padding: 16,
+    flexDirection: "column",
+    gap: 4,
+  },
+
+  dateAndTagContainer: {
+    flexDirection: "row",
+    gap: 8,
+    // justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  dateText: {
+    color: "#cbcfd3",
+    fontSize: 10,
+  },
+
+  tagText: {
+    padding: 4,
+    borderRadius: 4,
+    color: "#ffffff",
+    backgroundColor: "#7c70fc",
+    fontSize: 10,
+  },
+
+  titleText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333539",
+  },
+
+  descriptionText: {
+    color: "#a5acac",
+    fontSize: 12,
   },
 });

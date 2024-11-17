@@ -30,14 +30,15 @@ export async function createTables(db: SQLite.SQLiteDatabase) {
         title TEXT,
         textContent TEXT,
         uri TEXT,
-        fileName TEXT
+        fileName TEXT,
+        timeStamp INTEGER
     );
 `);
 }
 
 export async function insertNote(db: SQLite.SQLiteDatabase, note: Note) {
   await db.runAsync(
-    `INSERT INTO note (id, tag, description, title, textContent, uri, fileName) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO note (id, tag, description, title, textContent, uri, fileName,timeStamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       note.id,
       note.tag,
@@ -46,6 +47,7 @@ export async function insertNote(db: SQLite.SQLiteDatabase, note: Note) {
       note.textContent,
       note.uri,
       note.fileName,
+      note.timeStamp,
     ]
   );
 }
