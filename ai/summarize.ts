@@ -24,6 +24,7 @@ export const summarizeNote = async (groqInstance: Groq, context: string) => {
           - According your summary, generate 3 general tags we can classify the pdf with according to the content
           - The tags should be general and not too specific to this document
           - Don't hallucinate, just use the content of the pdf
+          - Reply all your answers according the language of the pdf
           - Reply with the following JSON structure:
           {
             "summary": "The summary of the pdf",
