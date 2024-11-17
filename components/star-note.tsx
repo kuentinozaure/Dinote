@@ -1,21 +1,33 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface StarNoteProps {
   title: string;
   description: string;
   tag: string;
+  onClick?: () => void;
 }
 
-export default function StarNote({ title, description, tag }: StarNoteProps) {
+export default function StarNote({
+  title,
+  description,
+  tag,
+  onClick,
+}: StarNoteProps) {
+  const onPressNote = () => {
+    if (onClick) onClick();
+  };
   return (
-    <View style={styles.noteContainer}>
+    <TouchableOpacity
+      style={styles.noteContainer}
+      onPress={() => onPressNote()}
+    >
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
 
       <View style={styles.tagContainer}>
         <Text style={styles.tag}>{tag}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
