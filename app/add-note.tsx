@@ -6,12 +6,21 @@ import { useState } from "react";
 import FileUploader from "@/components/file-uploader";
 import UploadFile from "@/components/upload-file";
 
+import Groq from "groq-sdk";
+import Button from "@/components/button";
+
 interface Note {
   uri: string;
   name: string;
 }
+
 export default function AddNotePage() {
   const [document, setDocument] = useState<Note | null>(null);
+  const [aiResponse, setResponse] = useState<string | null>(null);
+
+  const groq = new Groq({
+    apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY,
+  });
 
   const onFileUploadPress = async () => {
     const fileFromFinder = await pickSingle({
@@ -20,15 +29,27 @@ export default function AddNotePage() {
 
     const fileName = FileSystem.documentDirectory || "" + fileFromFinder.name;
 
-    const fileStoreOnDevice = await FileSystem.createDownloadResumable(
-      fileFromFinder.uri,
-      fileName
-    );
+    await FileSystem.createDownloadResumable(fileFromFinder.uri, fileName);
 
     setDocument({
       uri: fileName,
       name: fileFromFinder.name || "",
     });
+  };
+
+  const testAI = async () => {
+    const data = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: "Est tu une IA ?",
+        },
+      ],
+      model: "llama3-8b-8192",
+    });
+
+    setResponse(data.choices[0]?.message?.content || "");
+    console.log(data.choices[0]?.message?.content || "");
   };
 
   return (
@@ -46,6 +67,10 @@ export default function AddNotePage() {
         {document && document.uri && (
           <UploadFile fileName={document.name}> </UploadFile>
         )}
+
+        <Button buttonClick={() => testAI()} text={"test ai"}></Button>
+
+        <Text>{aiResponse}</Text>
       </View>
     </>
   );
