@@ -1,7 +1,7 @@
 import AddNoteButton from "@/components/add-note-button";
 import Avatar from "@/components/avatar";
 import StarNote from "@/components/star-note";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 
@@ -30,6 +30,10 @@ const mockStarredNotes = [
 export default function Index() {
   const [starredNotes, setStarredNotes] = useState(mockStarredNotes);
 
+  const onAddNewNote = () => {
+    router.push("./add-note", { relativeToDirectory: false });
+  };
+
   return (
     <>
       <Stack.Screen
@@ -57,7 +61,7 @@ export default function Index() {
         </ScrollView>
       </View>
 
-      <AddNoteButton />
+      <AddNoteButton plusButtonClicked={onAddNewNote} />
     </>
   );
 }

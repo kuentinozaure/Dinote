@@ -1,8 +1,16 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function AddNoteButton() {
+interface AddButtonProps {
+  plusButtonClicked(): void;
+}
+
+export default function AddNoteButton({ plusButtonClicked }: AddButtonProps) {
+  const onPressButton = () => {
+    plusButtonClicked();
+  };
+
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} onPress={() => onPressButton()}>
       <View>
         <Text style={styles.buttonText}>+ Add new note</Text>
       </View>
