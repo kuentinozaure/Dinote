@@ -17,6 +17,7 @@ import { insertNote } from "@/db/db";
 import StarNote from "@/components/star-note";
 import { Note } from "@/interfaces/note";
 import { Feather } from "@expo/vector-icons";
+import { useGroqContext } from "@/context/groq-context";
 
 // TODO: Move this to a config file
 const API_URL =
@@ -24,6 +25,7 @@ const API_URL =
 
 export default function AddNotePage() {
   const db = useSQLiteContext();
+  const groq = useGroqContext();
   const [note, setNote] = useState<Note>({
     title: "",
     description: "",
@@ -36,11 +38,6 @@ export default function AddNotePage() {
   });
   const [noteGenerated, setNoteGenerated] = useState<NoteSummarized | null>(
     null
-  );
-  const [groq] = useState<Groq>(
-    new Groq({
-      apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY,
-    })
   );
 
   const onFileUploadPress = async () => {
