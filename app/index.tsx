@@ -1,26 +1,21 @@
-import Avatar from "@/components/avatar";
-import { Stack } from "expo-router";
+import { router } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
-import { Note } from "./add-note";
+import { StyleSheet, Text, View, ScrollView, SafeAreaView } from "react-native";
 import React from "react";
 import Chip from "@/components/chip";
 import Dinote from "@/components/dinote";
+import AddButton from "@/components/add-button";
+import { Note } from "@/interfaces/note";
 
 export default function Index() {
   const db = useSQLiteContext();
   const [notes, setNotes] = useState<Note[]>([]);
+  const [getTags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
     getNoteFromDb();
+    getTagsFromDb();
 
     // Optional: Cleanup function when the component unmounts
     return () => {
@@ -35,21 +30,22 @@ export default function Index() {
         FROM note
         ORDER BY timeStamp DESC`
       );
-      console.log(notes);
       setNotes(notes);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const calculateDate = (timeStamp: number) => {
-    const date = new Date(timeStamp);
-
-    const day = date.getDate();
-    // Month in letter
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+  const getTagsFromDb = async () => {
+    try {
+      const tags = await db.getAllAsync<{ tag: string }>(
+        `SELECT Distinct tag
+        FROM note`
+      );
+      setTags(tags.map((entry) => entry.tag));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const renderDinotesInGridOrSeparator = () => {
@@ -62,6 +58,10 @@ export default function Index() {
     ));
   };
 
+  const addNoteButtonClicked = () => {
+    router.push("./add-note", { relativeToDirectory: false });
+  };
+
   return (
     <SafeAreaView style={styles.homePageContainer}>
       <Text style={styles.title}>Dinotes</Text>
@@ -72,10 +72,10 @@ export default function Index() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <Chip title={"All Notes"} infoElement={0} />
-          <Chip title={"#Productivity"} infoElement={0} />
-          <Chip title={"#Personal"} infoElement={0} />
-          <Chip title={"#Java"} infoElement={0} />
+          <Chip title={"All Notes"} infoElement={notes.length} />
+          {getTags.map((tag, index) => (
+            <Chip title={tag} key={index} />
+          ))}
         </ScrollView>
       </View>
 
@@ -117,6 +117,7 @@ export default function Index() {
       {/* </TouchableOpacity> */}
       {/* ))} */}
       {/* </ScrollView> */}
+      <AddButton buttonClick={() => addNoteButtonClicked()} />
     </SafeAreaView>
   );
 }
@@ -149,8 +150,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     flexWrap: "wrap",
-    gap: 16,
-    // justifyContent: "space-between",
+    gap: 8,
+    justifyContent: "space-between",
   },
 
   // contentContainer: {

@@ -1,7 +1,6 @@
-import { createTables, DB_NAME, migrateDbIfNeeded } from "@/db/db";
+import { DB_NAME, migrateDbIfNeeded } from "@/db/db";
 import { Stack } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
-import { SafeAreaView, View } from "react-native";
 
 export default function RootLayout() {
   return (

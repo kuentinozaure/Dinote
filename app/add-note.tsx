@@ -7,24 +7,15 @@ import FileUploader from "@/components/file-uploader";
 import UploadFile from "@/components/upload-file";
 import Groq from "groq-sdk";
 import axios from "axios";
-import StarNote from "@/components/star-note";
+
 import { NoteSummarized, summarizeNote } from "@/ai/summarize";
 import React from "react";
 import Button from "@/components/button";
 import { randomUUID } from "expo-crypto";
 import { useSQLiteContext } from "expo-sqlite";
 import { insertNote } from "@/db/db";
-
-export interface Note {
-  uri: string;
-  fileName: string;
-  textContent: string;
-  title: string;
-  description: string;
-  tag: string;
-  id: string;
-  timeStamp: number;
-}
+import StarNote from "@/components/star-note";
+import { Note } from "@/interfaces/note";
 
 // TODO: Move this to a config file
 const API_URL =

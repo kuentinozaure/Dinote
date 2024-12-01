@@ -7,7 +7,8 @@ import {
   View,
 } from "react-native";
 import Chip from "./chip";
-import { Note } from "@/app/(tabs)/add-note";
+import { calculateDateFromTimeStamp } from "@/helpers/date.helper";
+import { Note } from "@/interfaces/note";
 
 const DINOTE_QUICK_ACTIONS = [
   "Generate a Quiz",
@@ -55,7 +56,9 @@ export default function Dinote({ isSeparatorNote, note }: DinoteProps) {
       </View>
 
       <View style={styles.dinoteTitle}>
-        <Text style={styles.dinoteDateText}>12/01/2022</Text>
+        <Text style={styles.dinoteDateText}>
+          {calculateDateFromTimeStamp(note.timeStamp)}
+        </Text>
         <FontAwesome name="star-o" size={15} color="white" />
         {/* <FontAwesome name="star" size={15} color="white" /> */}
       </View>
@@ -77,8 +80,7 @@ const styles = StyleSheet.create({
 
   gridNote: {
     backgroundColor: "#1b1b1b",
-    width: "45%",
-    marginLeft: "2%",
+    width: "47.5%",
   },
 
   dinoteTitle: {

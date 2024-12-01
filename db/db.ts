@@ -1,4 +1,4 @@
-import { Note } from "@/app/(tabs)/add-note";
+import { Note } from "@/interfaces/note";
 import * as SQLite from "expo-sqlite";
 
 export const DB_NAME = "DINOTE";
