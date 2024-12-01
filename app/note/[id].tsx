@@ -2,15 +2,24 @@ import { router, useGlobalSearchParams } from "expo-router";
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Note } from "../../interfaces/note";
-import { Feather, FontAwesome5 } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import Chip from "@/components/chip";
 
 import Markdown from "@ronradtke/react-native-markdown-display";
+import Ellipsis from "@/components/ellipsis";
+import { useSQLiteContext } from "expo-sqlite";
+import { deleteNote } from "@/db/deleter";
 
 export default function Page() {
+  const db = useSQLiteContext();
   const note: Note = JSON.parse(useGlobalSearchParams().note as string) as Note;
 
   const goBack = () => {
+    router.back();
+  };
+
+  const onDeleteNote = () => {
+    deleteNote(db, note.id);
     router.back();
   };
 
@@ -24,7 +33,8 @@ export default function Page() {
           color="white"
           onPress={() => goBack()}
         />
-        <FontAwesome5 name="ellipsis-h" size={24} color="white" />
+
+        <Ellipsis onDeleteNote={() => onDeleteNote()} />
       </View>
 
       <ScrollView
