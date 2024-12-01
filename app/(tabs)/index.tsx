@@ -1,18 +1,15 @@
-import AddNoteButton from "@/components/add-note-button";
 import Avatar from "@/components/avatar";
-import StarNote from "@/components/star-note";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { Note } from "./add-note";
-import Button from "@/components/button";
 import React from "react";
 
 export default function Index() {
@@ -30,16 +27,17 @@ export default function Index() {
 
   const getNoteFromDb = async () => {
     try {
-      const notes = await db.getAllAsync<Note>("SELECT * FROM note");
+      const notes = await db.getAllAsync<Note>(
+        `SELECT *
+        FROM note
+        ORDER BY timeStamp DESC
+        Limit 5`
+      );
       console.log("notes", notes);
       setStarredNotes(notes);
     } catch (e) {
       console.log(e);
     }
-  };
-
-  const onAddNewNote = () => {
-    router.push("./add-note", { relativeToDirectory: false });
   };
 
   const calculateDate = (timeStamp: number) => {
@@ -61,9 +59,10 @@ export default function Index() {
         }}
       />
 
-      <View style={styles.homePageContainer}>
-        <Text>Starred Notes</Text>
-        <ScrollView
+      <ScrollView style={styles.homePageContainer}>
+        <Text>Your 5 latest notes :</Text>
+
+        {/* <ScrollView
           contentContainerStyle={styles.contentContainer}
           style={styles.scrollContainer}
           horizontal={true}
@@ -76,7 +75,7 @@ export default function Index() {
               tag={note.tag}
             />
           ))}
-        </ScrollView>
+        </ScrollView> */}
 
         {starredNotes.map((note, index) => (
           <TouchableOpacity style={styles.noteContainer}>
@@ -87,12 +86,10 @@ export default function Index() {
               <Text style={styles.tagText}>{note.tag}</Text>
             </View>
             <Text style={styles.titleText}>{note.title}</Text>
-            <Text style={styles.descriptionText}>{note.description} </Text>
+            {/* <Text style={styles.descriptionText}>{note.description} </Text> */}
           </TouchableOpacity>
         ))}
-      </View>
-
-      <AddNoteButton plusButtonClicked={onAddNewNote} />
+      </ScrollView>
     </>
   );
 }

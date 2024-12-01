@@ -168,11 +168,7 @@ export default function AddNotePage() {
 
   return (
     <ScrollView>
-      <Stack.Screen
-        options={{
-          headerTitle: "",
-        }}
-      />
+      <Stack.Screen options={{}} />
       <View style={styles.container}>
         <FileUploader
           onFileUploadPress={() => onFileUploadPress()}
