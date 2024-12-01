@@ -18,6 +18,7 @@ import StarNote from "@/components/star-note";
 import { Note } from "@/interfaces/note";
 import { Feather } from "@expo/vector-icons";
 import { useGroqContext } from "@/context/groq-context";
+import { convertToMarkdown } from "@/ai/convert-to-markdown";
 
 // TODO: Move this to a config file
 const API_URL =
@@ -35,6 +36,7 @@ export default function AddNotePage() {
     textContent: "",
     id: "",
     timeStamp: 0,
+    markdownContent: "",
   });
   const [noteGenerated, setNoteGenerated] = useState<NoteSummarized | null>(
     null
@@ -56,48 +58,6 @@ export default function AddNotePage() {
       };
     });
   };
-  //   const data = await groq.chat.completions.create({
-  //     messages: [
-  //       {
-  //         role: "user",
-  //         content: `
-  //         You are a tool who summarizes note pdfs
-  //         You are not interacting with a human, but with a machine
-
-  //         The following context is a pdf that needs to be summarized:
-  //         ${pdfContext}
-
-  //         -----------------------------
-  //         Instructions:
-
-  //         - Summarize the pdf
-  //         - According your summary, generate 3 titles that make sense with the content
-  //         - According your summary, generate 3 description that make sense with the content
-  //         - According your summary, generate 3 general tags we can classify the pdf with according to the content
-  //         - The tags should be general and not too specific to this document
-  //         - Don't hallucinate, just use the content of the pdf
-  //         - Reply with the following JSON structure:
-  //         {
-  //           "summary": "The summary of the pdf",
-  //           "titles": ["Title 1", "Title 2", "Title 3"],
-  //           "tags": ["#Tag1", "#Tag 2", "#Tag3"],
-  //           description: ["Description 1", "Description 2", "Description 3"]
-  //         }
-  //         `,
-  //         name: "pdf",
-  //       },
-  //     ],
-  //     model: "llama3-8b-8192",
-  //     response_format: { type: "json_object" },
-  //   });
-
-  //   if (!data.choices[0]?.message?.content) {
-  //     return;
-  //   }
-
-  //   const response = JSON.parse(data.choices[0].message.content);
-  //   setNoteGenerated(response);
-  // };
 
   const onUploadedFilePress = async () => {
     // Get the file as base64 before sending it to the server
@@ -131,8 +91,14 @@ export default function AddNotePage() {
     }
   };
 
-  const onNoteSelection = (title: string) => {
+  const textContentToMarkdown = async (textContent: string) => {
+    const aiData = await convertToMarkdown(groq, textContent);
+    return aiData?.markdownContent || "";
+  };
+
+  const onNoteSelection = async (title: string) => {
     const index = noteGenerated?.titles.indexOf(title);
+    const markdownContent = await textContentToMarkdown(note.textContent);
 
     setNote((prev) => {
       return {
@@ -142,6 +108,7 @@ export default function AddNotePage() {
         tag: noteGenerated?.tags[index || 0] || "",
         id: randomUUID(),
         timeStamp: Date.now(),
+        markdownContent: markdownContent,
       };
     });
   };

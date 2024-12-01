@@ -7,4 +7,5 @@ export interface Note {
   tag: string;
   id: string;
   timeStamp: number;
+  markdownContent: string;
 }

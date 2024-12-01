@@ -5,6 +5,8 @@ import { Note } from "../../interfaces/note";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import Chip from "@/components/chip";
 
+import Markdown from "@ronradtke/react-native-markdown-display";
+
 export default function Page() {
   const note: Note = JSON.parse(useGlobalSearchParams().note as string) as Note;
 
@@ -35,8 +37,18 @@ export default function Page() {
         </View>
       </View>
 
+      {/* Markdown content */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={{ color: "#ffffff" }}>{note.textContent}</Text>
+        <Markdown
+          style={{
+            text: {
+              color: "#e5e5e5",
+              fontSize: 24,
+            },
+          }}
+        >
+          {note.markdownContent}
+        </Markdown>
       </ScrollView>
     </SafeAreaView>
   );
