@@ -1,5 +1,5 @@
 import { router, Stack } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { pickSingle } from "react-native-document-picker";
 import { useState } from "react";
@@ -16,6 +16,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { insertNote } from "@/db/db";
 import StarNote from "@/components/star-note";
 import { Note } from "@/interfaces/note";
+import { Feather } from "@expo/vector-icons";
 
 // TODO: Move this to a config file
 const API_URL =
@@ -157,63 +158,76 @@ export default function AddNotePage() {
     }
   };
 
+  const goBack = () => {
+    router.back();
+  };
+
   return (
-    <ScrollView>
-      <Stack.Screen options={{}} />
-      <View style={styles.container}>
-        <FileUploader
-          onFileUploadPress={() => onFileUploadPress()}
-        ></FileUploader>
+    <SafeAreaView>
+      <Feather
+        name="arrow-left"
+        size={24}
+        color="white"
+        onPress={() => goBack()}
+      />
+      ;
+      <ScrollView>
+        <Stack.Screen options={{}} />
+        <View style={styles.container}>
+          <FileUploader
+            onFileUploadPress={() => onFileUploadPress()}
+          ></FileUploader>
 
-        {note && note.uri !== "" && (
-          <UploadFile
-            fileName={note.fileName}
-            fileUploadClick={() => onUploadedFilePress()}
-          ></UploadFile>
-        )}
+          {note && note.uri !== "" && (
+            <UploadFile
+              fileName={note.fileName}
+              fileUploadClick={() => onUploadedFilePress()}
+            ></UploadFile>
+          )}
 
-        <View>
-          {noteGenerated && (
-            <>
-              <ScrollView
-                horizontal={true}
-                contentContainerStyle={styles.contentContainer}
-              >
-                <StarNote
-                  key={1}
-                  description={noteGenerated.description[0]}
-                  tag={noteGenerated.tags[0]}
-                  title={noteGenerated.titles[0]}
-                  onClick={() => onNoteSelection(noteGenerated.titles[0])}
-                ></StarNote>
+          <View>
+            {noteGenerated && (
+              <>
+                <ScrollView
+                  horizontal={true}
+                  contentContainerStyle={styles.contentContainer}
+                >
+                  <StarNote
+                    key={1}
+                    description={noteGenerated.description[0]}
+                    tag={noteGenerated.tags[0]}
+                    title={noteGenerated.titles[0]}
+                    onClick={() => onNoteSelection(noteGenerated.titles[0])}
+                  ></StarNote>
 
-                <StarNote
-                  key={2}
-                  description={noteGenerated.description[1]}
-                  tag={noteGenerated.tags[1]}
-                  title={noteGenerated.titles[1]}
-                  onClick={() => onNoteSelection(noteGenerated.titles[1])}
-                ></StarNote>
+                  <StarNote
+                    key={2}
+                    description={noteGenerated.description[1]}
+                    tag={noteGenerated.tags[1]}
+                    title={noteGenerated.titles[1]}
+                    onClick={() => onNoteSelection(noteGenerated.titles[1])}
+                  ></StarNote>
 
-                <StarNote
-                  key={3}
-                  description={noteGenerated.description[2]}
-                  tag={noteGenerated.tags[2]}
-                  title={noteGenerated.titles[2]}
-                  onClick={() => onNoteSelection(noteGenerated.titles[2])}
-                ></StarNote>
-              </ScrollView>
-            </>
+                  <StarNote
+                    key={3}
+                    description={noteGenerated.description[2]}
+                    tag={noteGenerated.tags[2]}
+                    title={noteGenerated.titles[2]}
+                    onClick={() => onNoteSelection(noteGenerated.titles[2])}
+                  ></StarNote>
+                </ScrollView>
+              </>
+            )}
+          </View>
+          {note.id.length > 0 && (
+            <Button
+              text="Save this note"
+              buttonClick={() => onSaveNote()}
+            ></Button>
           )}
         </View>
-        {note.id.length > 0 && (
-          <Button
-            text="Save this note"
-            buttonClick={() => onSaveNote()}
-          ></Button>
-        )}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

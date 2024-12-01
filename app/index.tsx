@@ -7,6 +7,7 @@ import Chip from "@/components/chip";
 import Dinote from "@/components/dinote";
 import AddButton from "@/components/add-button";
 import { Note } from "@/interfaces/note";
+import { getNotesFromDB, getTagsFromDB } from "@/db/getter";
 
 export default function Index() {
   const db = useSQLiteContext();
@@ -14,8 +15,8 @@ export default function Index() {
   const [getTags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
-    getNoteFromDb();
     getTagsFromDb();
+    getNoteFromDb();
 
     // Optional: Cleanup function when the component unmounts
     return () => {
@@ -24,28 +25,11 @@ export default function Index() {
   }, []);
 
   const getNoteFromDb = async () => {
-    try {
-      const notes = await db.getAllAsync<Note>(
-        `SELECT *
-        FROM note
-        ORDER BY timeStamp DESC`
-      );
-      setNotes(notes);
-    } catch (e) {
-      console.log(e);
-    }
+    setNotes(await getNotesFromDB(db));
   };
 
   const getTagsFromDb = async () => {
-    try {
-      const tags = await db.getAllAsync<{ tag: string }>(
-        `SELECT Distinct tag
-        FROM note`
-      );
-      setTags(tags.map((entry) => entry.tag));
-    } catch (e) {
-      console.log(e);
-    }
+    setTags(await getTagsFromDB(db));
   };
 
   const renderDinotesInGridOrSeparator = () => {

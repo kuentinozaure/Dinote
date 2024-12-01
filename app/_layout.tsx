@@ -10,9 +10,7 @@ export default function RootLayout() {
           headerShown: false,
           contentStyle: { backgroundColor: "#010101" },
         }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
+      ></Stack>
     </SQLiteProvider>
   );
 }
