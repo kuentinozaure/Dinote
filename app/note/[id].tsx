@@ -27,18 +27,21 @@ export default function Page() {
         <FontAwesome5 name="ellipsis-h" size={24} color="white" />
       </View>
 
-      {/* document title  */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.noteTitle}>{note.title}</Text>
-
-        <View style={styles.shareContainer}>
-          <Chip title={"Quizz"} />
-          <Feather name="share" size={24} color="white" />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[0]}
+        stickyHeaderHiddenOnScroll={true}
+      >
+        {/* document title  */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.noteTitle}>{note.title}</Text>
+          <View style={styles.shareContainer}>
+            <Chip title={"Quizz"} />
+            <Feather name="share" size={24} color="white" />
+          </View>
         </View>
-      </View>
 
-      {/* Markdown content */}
-      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Markdown content */}
         <Markdown
           style={{
             text: {
@@ -73,6 +76,7 @@ const styles = StyleSheet.create({
     gap: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#1b1b1b",
+    backgroundColor: "#010101",
   },
 
   shareContainer: {
