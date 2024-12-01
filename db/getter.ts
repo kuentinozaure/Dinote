@@ -15,13 +15,17 @@ export async function getNotesFromDB(db: SQLiteDatabase): Promise<Note[]> {
   }
 }
 
-export async function getTagsFromDB(db: SQLiteDatabase): Promise<string[]> {
+export async function getTagsFromDB(
+  db: SQLiteDatabase
+): Promise<{ tag: string; count: number }[]> {
   try {
-    const tags = await db.getAllAsync<{ tag: string }>(
-      `SELECT Distinct tag
-        FROM note`
+    const tags = await db.getAllAsync<{ tag: string; count: number }>(
+      `SELECT Distinct tag, COUNT(*) as count
+        FROM note
+        GROUP BY tag
+        ORDER BY count DESC;`
     );
-    return tags.map((entry) => entry.tag);
+    return tags;
   } catch (e) {
     console.log(e);
     return [];

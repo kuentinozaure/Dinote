@@ -12,7 +12,7 @@ import { getNotesFromDB, getTagsFromDB } from "@/db/getter";
 export default function Index() {
   const db = useSQLiteContext();
   const [notes, setNotes] = useState<Note[]>([]);
-  const [getTags, setTags] = useState<string[]>([]);
+  const [getTags, setTags] = useState<{ tag: string; count: number }[]>([]);
 
   useEffect(() => {
     getTagsFromDb();
@@ -57,8 +57,8 @@ export default function Index() {
           contentContainerStyle={styles.scrollContent}
         >
           <Chip title={"All Notes"} infoElement={notes.length} />
-          {getTags.map((tag, index) => (
-            <Chip title={tag} key={index} />
+          {getTags.map((item, index) => (
+            <Chip title={item.tag} key={index} infoElement={item.count} />
           ))}
         </ScrollView>
       </View>
