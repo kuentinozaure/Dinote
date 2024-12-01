@@ -5,16 +5,23 @@ interface ChipProps {
   infoElement: number | string | null;
   isActive: boolean;
   customBackground?: string;
+  onChipPress?: () => void;
 }
 export default function Chip({
   title,
   infoElement,
   isActive,
   customBackground,
+  onChipPress,
 }: ChipProps) {
+  const onPress = () => {
+    if (onChipPress) {
+      onChipPress();
+    }
+  };
   return (
     <TouchableOpacity
-      onPress={() => {}}
+      onPress={() => onPress()}
       style={[
         styles.tagFilter,
         isActive ? styles.tagFilterActive : styles.tagFilterInactive,

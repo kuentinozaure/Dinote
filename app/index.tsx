@@ -7,12 +7,17 @@ import Chip from "@/components/chip";
 import Dinote from "@/components/dinote";
 import AddButton from "@/components/add-button";
 import { Note } from "@/interfaces/note";
-import { getNotesFromDB, getTagsFromDB } from "@/db/getter";
+import {
+  getNotesByTagNameFromDB,
+  getNotesFromDB,
+  getTagsFromDB,
+} from "@/db/getter";
 
 export default function Index() {
   const db = useSQLiteContext();
   const [notes, setNotes] = useState<Note[]>([]);
   const [getTags, setTags] = useState<{ tag: string; count: number }[]>([]);
+  const [selectedTag, setSelectedTag] = useState<number>(-1);
 
   useEffect(() => {
     getTagsFromDb();
@@ -46,6 +51,17 @@ export default function Index() {
     router.push("./add-note", { relativeToDirectory: false });
   };
 
+  const onChipPress = async (index: number) => {
+    setSelectedTag(index);
+    if (index === -1) {
+      getNoteFromDb();
+    } else {
+      const tagName = getTags[index].tag;
+      const notes = await getNotesByTagNameFromDB(db, tagName);
+      setNotes(notes);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.homePageContainer}>
       <Text style={styles.title}>Dinotes</Text>
@@ -56,9 +72,21 @@ export default function Index() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <Chip title={"All Notes"} infoElement={notes.length} />
+          <Chip
+            title={"All Notes"}
+            infoElement={notes.length}
+            key={-1}
+            onChipPress={() => onChipPress(-1)}
+            isActive={selectedTag === -1}
+          />
           {getTags.map((item, index) => (
-            <Chip title={item.tag} key={index} infoElement={item.count} />
+            <Chip
+              title={item.tag}
+              key={index}
+              infoElement={item.count}
+              onChipPress={() => onChipPress(index)}
+              isActive={selectedTag === index}
+            />
           ))}
         </ScrollView>
       </View>
