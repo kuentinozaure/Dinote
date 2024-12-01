@@ -15,6 +15,7 @@ import {
 
 export default function Index() {
   const db = useSQLiteContext();
+  const [allNotes, setAllNotes] = useState<Note[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [getTags, setTags] = useState<{ tag: string; count: number }[]>([]);
   const [selectedTag, setSelectedTag] = useState<number>(-1);
@@ -30,7 +31,9 @@ export default function Index() {
   }, []);
 
   const getNoteFromDb = async () => {
-    setNotes(await getNotesFromDB(db));
+    const notes = await getNotesFromDB(db);
+    setNotes(notes);
+    setAllNotes(notes); // Save all notes to keep a reference
   };
 
   const getTagsFromDb = async () => {
@@ -56,8 +59,7 @@ export default function Index() {
     if (index === -1) {
       getNoteFromDb();
     } else {
-      const tagName = getTags[index].tag;
-      const notes = await getNotesByTagNameFromDB(db, tagName);
+      const notes = await getNotesByTagNameFromDB(db, getTags[index].tag);
       setNotes(notes);
     }
   };
@@ -74,7 +76,7 @@ export default function Index() {
         >
           <Chip
             title={"All Notes"}
-            infoElement={notes.length}
+            infoElement={allNotes.length}
             key={-1}
             onChipPress={() => onChipPress(-1)}
             isActive={selectedTag === -1}
