@@ -1,8 +1,9 @@
 import { router, useGlobalSearchParams } from "expo-router";
 
-import { SafeAreaView, StyleSheet, Text } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Note } from "../../interfaces/note";
-import { Feather } from "@expo/vector-icons";
+import { Feather, FontAwesome5 } from "@expo/vector-icons";
+import Chip from "@/components/chip";
 
 export default function Page() {
   const note: Note = JSON.parse(useGlobalSearchParams().note as string) as Note;
@@ -12,19 +13,65 @@ export default function Page() {
   };
 
   return (
-    <SafeAreaView>
-      <Feather
-        name="arrow-left"
-        size={24}
-        color="white"
-        onPress={() => goBack()}
-      />
-      <Text style={styles.test}>Blog post: {note.description}</Text>
+    <SafeAreaView style={styles.noteContainer}>
+      {/* go back container */}
+      <View style={styles.goBackContainer}>
+        <Feather
+          name="arrow-left"
+          size={24}
+          color="white"
+          onPress={() => goBack()}
+        />
+        <FontAwesome5 name="ellipsis-h" size={24} color="white" />
+      </View>
+
+      {/* document title  */}
+      <View style={styles.titleContainer}>
+        <Text style={styles.noteTitle}>{note.title}</Text>
+
+        <View style={styles.shareContainer}>
+          <Chip title={"Quizz"} />
+          <Feather name="share" size={24} color="white" />
+        </View>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={{ color: "#ffffff" }}>{note.textContent}</Text>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
-  test: {
-    color: "red",
+  noteContainer: {
+    flex: 1,
+    flexDirection: "column",
+    gap: 8,
+    margin: 16,
+  },
+
+  goBackContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: 16,
+  },
+
+  titleContainer: {
+    flexDirection: "column",
+    gap: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#1b1b1b",
+  },
+
+  shareContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: 24,
+  },
+
+  noteTitle: {
+    color: "#ffffff",
+    fontSize: 40,
   },
 });
