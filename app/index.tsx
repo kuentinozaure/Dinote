@@ -70,16 +70,17 @@ export default function Index() {
   };
 
   const onChipPress = async (index: number) => {
-    // if the same tag is selected, do nothing
-    if (index === selectedTag) {
-      return;
-    }
-
     // If the same tag is selected,not equal to all note
     // reset the selected tag and get all notes
     if (index === selectedTag && index !== -1) {
       setSelectedTag(-1);
       getNoteFromDb();
+      return;
+    }
+
+    // If the all notes tag is already selected, and user clicks on all notes tag
+    // do nothing
+    if (index === selectedTag) {
       return;
     }
 
