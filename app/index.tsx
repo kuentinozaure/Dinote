@@ -40,13 +40,28 @@ export default function Index() {
     setTags(await getTagsFromDB(db));
   };
 
+  const onDinotePress = (note: Note) => {
+    router.push(
+      {
+        pathname: `/note/[id]`,
+        params: { note: JSON.stringify(note), id: note.id },
+      },
+      { relativeToDirectory: false }
+    );
+  };
+
   const renderDinotesInGridOrSeparator = () => {
     if (notes.length === 0) {
       return <Text>No notes found</Text>;
     }
 
     return notes.map((note, index) => (
-      <Dinote key={index} isSeparatorNote={index % 5 === 0} note={note} />
+      <Dinote
+        key={index}
+        isSeparatorNote={index % 5 === 0}
+        note={note}
+        onDinotePress={() => onDinotePress(note)}
+      />
     ));
   };
 
@@ -100,37 +115,6 @@ export default function Index() {
         {renderDinotesInGridOrSeparator()}
       </ScrollView>
 
-      {/* <Stack.Screen /> */}
-
-      {/* <ScrollView style={styles.homePageContainer}> */}
-      {/* <Text>Your 5 latest notes :</Text> */}
-
-      {/* <ScrollView
-          contentContainerStyle={styles.contentContainer}
-          style={styles.scrollContainer}
-          horizontal={true}
-        >
-          {starredNotes.map((note, index) => (
-            <StarNote
-              key={index}
-              title={note.title}
-              description={note.description}
-              tag={note.tag}
-            />
-          ))}
-        </ScrollView> */}
-
-      {/* {starredNotes.map((note, index) => (
-        <TouchableOpacity style={styles.noteContainer}>
-          <View style={styles.dateAndTagContainer}>
-            <Text style={styles.dateText}>{calculateDate(note.timeStamp)}</Text>
-            <Text style={styles.tagText}>{note.tag}</Text>
-          </View>
-          <Text style={styles.titleText}>{note.title}</Text>
-          {/* <Text style={styles.descriptionText}>{note.description} </Text> */}
-      {/* </TouchableOpacity> */}
-      {/* ))} */}
-      {/* </ScrollView> */}
       <AddButton buttonClick={() => addNoteButtonClicked()} />
     </SafeAreaView>
   );
@@ -167,53 +151,4 @@ const styles = StyleSheet.create({
     gap: 8,
     justifyContent: "space-between",
   },
-
-  // contentContainer: {
-  //   padding: 16,
-  //   gap: 8,
-  // },
-
-  // scrollContainer: {
-  //   height: 0,
-  //   maxHeight: 200,
-  // },
-
-  // noteContainer: {
-  //   backgroundColor: "#f5f7fb",
-  //   borderRadius: 8,
-  //   padding: 16,
-  //   flexDirection: "column",
-  //   gap: 4,
-  // },
-
-  // dateAndTagContainer: {
-  //   flexDirection: "row",
-  //   gap: 8,
-  //   // justifyContent: "space-between",
-  //   alignItems: "center",
-  // },
-
-  // dateText: {
-  //   color: "#cbcfd3",
-  //   fontSize: 10,
-  // },
-
-  // tagText: {
-  //   padding: 4,
-  //   borderRadius: 4,
-  //   color: "#ffffff",
-  //   backgroundColor: "#7c70fc",
-  //   fontSize: 10,
-  // },
-
-  // titleText: {
-  //   fontSize: 16,
-  //   fontWeight: "bold",
-  //   color: "#333539",
-  // },
-
-  // descriptionText: {
-  //   color: "#a5acac",
-  //   fontSize: 12,
-  // },
 });

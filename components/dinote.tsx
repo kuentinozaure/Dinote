@@ -19,15 +19,27 @@ const DINOTE_QUICK_ACTIONS = [
 interface DinoteProps {
   isSeparatorNote: boolean;
   note: Note;
+  onDinotePress?: () => void;
 }
 
-export default function Dinote({ isSeparatorNote, note }: DinoteProps) {
+export default function Dinote({
+  isSeparatorNote,
+  note,
+  onDinotePress,
+}: DinoteProps) {
+  const onPress = () => {
+    if (onDinotePress) {
+      onDinotePress();
+    }
+  };
+
   return (
     <TouchableOpacity
       style={[
         styles.noteContainer,
         isSeparatorNote ? styles.separatorNote : styles.gridNote,
       ]}
+      onPress={onPress}
     >
       <View style={styles.dinoteTitle}>
         <Text style={styles.dinoteTitleText}>{note.title}</Text>

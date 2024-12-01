@@ -170,7 +170,7 @@ export default function AddNotePage() {
         color="white"
         onPress={() => goBack()}
       />
-      ;
+
       <ScrollView>
         <Stack.Screen options={{}} />
         <View style={styles.container}>
