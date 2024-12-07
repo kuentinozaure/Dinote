@@ -66,7 +66,7 @@ export default function Index() {
   };
 
   const addNoteButtonClicked = () => {
-    router.push("./add-note", { relativeToDirectory: false });
+    router.push("./create-note", { relativeToDirectory: false });
   };
 
   const onChipPress = async (index: number) => {
