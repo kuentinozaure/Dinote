@@ -35,6 +35,7 @@ export default function CreateNote() {
     timeStamp: 0,
     markdownContent: "",
   });
+  const [processingState, setProcessingState] = useState("");
 
   const goBack = () => {
     router.back();
@@ -85,6 +86,8 @@ export default function CreateNote() {
       }
     );
 
+    setProcessingState("Processing your file ...");
+
     try {
       const response = await axios.post(
         API_URL,
@@ -98,12 +101,12 @@ export default function CreateNote() {
         }
       );
 
+      setProcessingState("Dinote is processing your file ...");
+
       const [data, textToMarkdown] = await Promise.all([
         importNote(groq, response.data),
         textContentToMarkdown(response.data),
       ]);
-
-      console.log(textToMarkdown);
 
       // Set the note with the data from the pdf
       const newNote = {
@@ -117,7 +120,9 @@ export default function CreateNote() {
         tag: data?.tag || "",
         title: data?.title || "",
       };
+
       setNote(newNote);
+      setProcessingState("File processed successfully");
     } catch (error) {
       console.log(error);
     }
@@ -162,6 +167,7 @@ export default function CreateNote() {
         onUserPromptSubmitted={(userPrompt: string) =>
           onUserPromptSubmitted(userPrompt)
         }
+        processingState={processingState}
       ></Trixy>
     </SafeAreaView>
   );
