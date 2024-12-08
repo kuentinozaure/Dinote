@@ -2,13 +2,25 @@ import { StyleSheet, Text, View } from "react-native";
 import Chip from "./chip";
 import { Feather } from "@expo/vector-icons";
 import Markdown from "@ronradtke/react-native-markdown-display";
+import { Note as NoteType } from "@/interfaces/note";
+import { calculateDateFromTimeStamp } from "@/helpers/date.helper";
 
-export default function Note() {
+interface NoteProps {
+  note: NoteType;
+}
+
+export default function Note({ note }: NoteProps) {
   return (
     <View style={styles.noteContainer}>
       <View style={styles.noteHeaderContainer}>
-        <Text style={styles.noteHeaderNameText}>New note</Text>
-        <Text style={styles.noteHeaderDateText}>24 nov 2020, 01:45AM</Text>
+        <Text style={styles.noteHeaderNameText}>
+          {note.title.length > 0 ? note.title : "New note"}
+        </Text>
+        <Text style={styles.noteHeaderDateText}>
+          {calculateDateFromTimeStamp(
+            note.timeStamp > 0 ? note.timeStamp : Date.now()
+          )}
+        </Text>
 
         <View style={styles.noteHeaderShareContainer}>
           <Chip title={"Quizz"} />
@@ -16,16 +28,18 @@ export default function Note() {
         </View>
       </View>
 
-      <Markdown
-        style={{
-          text: {
-            color: "#e5e5e5",
-            fontSize: 24,
-          },
-        }}
-      >
-        dosfildsjflkdsjfljdsfl lfkjds lfkdjslkf ldsjf lksdfj dlskfjdlskj
-      </Markdown>
+      <View style={styles.markdownContainer}>
+        <Markdown
+          style={{
+            text: {
+              color: "#e5e5e5",
+              fontSize: 24,
+            },
+          }}
+        >
+          {note.markdownContent}
+        </Markdown>
+      </View>
     </View>
   );
 }
@@ -57,5 +71,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+
+  markdownContainer: {
+    paddingTop: 16,
   },
 });

@@ -5,7 +5,7 @@ import { useGroqContext } from "@/context/groq-context";
 import { Actions } from "@/enums/actions";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { pickSingle } from "react-native-document-picker";
 import * as FileSystem from "expo-file-system";
 import { answerQuestion } from "@/ai/answer-question";
@@ -41,7 +41,7 @@ export default function CreateNote() {
   };
 
   const onSaveNotePress = () => {
-    // TODO: Save note to the database
+    insertNote(db, note);
     goBack();
   };
 
@@ -118,11 +118,6 @@ export default function CreateNote() {
         title: data?.title || "",
       };
       setNote(newNote);
-
-      insertNote(db, newNote);
-      console.log(note);
-      console.log(newNote);
-      console.log("Note saved to the database");
     } catch (error) {
       console.log(error);
     }
@@ -159,7 +154,9 @@ export default function CreateNote() {
         />
       </View>
 
-      <Note />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Note note={note} />
+      </ScrollView>
 
       <Trixy
         onUserPromptSubmitted={(userPrompt: string) =>
