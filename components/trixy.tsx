@@ -13,6 +13,7 @@ import {
 const SIDE_PADDING = 30;
 export default function Trixy() {
   const [expanded, setExpanded] = useState(false);
+  const [inputText, setInputText] = useState("");
   const screenWidth = Dimensions.get("window").width;
 
   const generateExpandedStyle = () => {
@@ -23,8 +24,18 @@ export default function Trixy() {
     );
   };
 
+  const onChangeText = (userTyping: string) => {
+    setInputText(userTyping);
+  };
+
   const onExpandButton = () => {
+    setInputText("");
     setExpanded(!expanded);
+  };
+
+  const onSubmit = () => {
+    // ask ai to do something
+    console.log("Submit");
   };
 
   return (
@@ -34,7 +45,13 @@ export default function Trixy() {
     >
       {expanded && (
         <View style={[styles.expandedContent]}>
-          <TextInput placeholder="Ask me anything ..."></TextInput>
+          <TextInput
+            placeholder="Ask me anything ..."
+            onChangeText={(text) => onChangeText(text)}
+            onSubmitEditing={() => onSubmit()}
+          >
+            {inputText}
+          </TextInput>
         </View>
       )}
 
@@ -71,7 +88,7 @@ const styles = StyleSheet.create({
   },
 
   expandedContent: {
-    // width: ,
+    maxWidth: "80%",
     padding: 16,
   },
 });
