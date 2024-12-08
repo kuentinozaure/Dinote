@@ -1,6 +1,3 @@
-import { defineActionsToAchieve } from "@/ai/define-action-to-do";
-import { useGroqContext } from "@/context/groq-context";
-
 import { useState } from "react";
 import {
   Dimensions,
@@ -13,11 +10,15 @@ import {
 } from "react-native";
 
 const SIDE_PADDING = 30;
-export default function Trixy() {
+
+interface TrixyProps {
+  onUserPromptSubmitted?(userPrompt: string): void;
+}
+
+export default function Trixy({ onUserPromptSubmitted }: TrixyProps) {
   const [expanded, setExpanded] = useState(false);
   const [inputText, setInputText] = useState("");
   const screenWidth = Dimensions.get("window").width;
-  const groq = useGroqContext();
 
   const generateExpandedStyle = () => {
     return (
@@ -37,8 +38,10 @@ export default function Trixy() {
   };
 
   const onSubmit = async () => {
-    const actionToDo = await defineActionsToAchieve(groq, inputText);
-    console.log("actionToDo", actionToDo);
+    if (!onUserPromptSubmitted) {
+      return;
+    }
+    onUserPromptSubmitted(inputText);
   };
 
   return (

@@ -15,6 +15,10 @@ export default function CreateNote() {
     goBack();
   };
 
+  const onUserPromptSubmitted = (userPrompt: string) => {
+    console.log(userPrompt);
+  };
+
   return (
     <SafeAreaView style={styles.createNoteContainer}>
       <View style={styles.navigationHeader}>
@@ -57,7 +61,11 @@ export default function CreateNote() {
         </Markdown>
       </View>
 
-      <Trixy></Trixy>
+      <Trixy
+        onUserPromptSubmitted={(userPrompt: string) =>
+          onUserPromptSubmitted(userPrompt)
+        }
+      ></Trixy>
     </SafeAreaView>
   );
 }
