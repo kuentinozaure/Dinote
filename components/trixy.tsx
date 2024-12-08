@@ -39,7 +39,6 @@ export default function Trixy() {
   const onSubmit = async () => {
     const actionToDo = await defineActionsToAchieve(groq, inputText);
     console.log("actionToDo", actionToDo);
-    å;
   };
 
   return (
