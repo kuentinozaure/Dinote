@@ -13,6 +13,7 @@ import {
   getTagsFromDB,
 } from "@/db/getter";
 import NoDinote from "@/components/no-dinote";
+import { getSalutation } from "@/helpers/salutation.helper";
 
 export default function Index() {
   const db = useSQLiteContext();
@@ -22,10 +23,12 @@ export default function Index() {
   const [selectedTag, setSelectedTag] = useState<number>(-1);
 
   useEffect(() => {
-    getTagsFromDb();
-    getNoteFromDb();
+    const fetchData = async () => {
+      getTagsFromDb();
+      getNoteFromDb();
+    };
+    fetchData();
 
-    // Optional: Cleanup function when the component unmounts
     return () => {
       console.log("Component unmounted");
     };
@@ -53,7 +56,11 @@ export default function Index() {
 
   const renderDinotesInGridOrSeparator = () => {
     if (notes.length === 0) {
-      return <NoDinote />;
+      return (
+        <View>
+          <NoDinote />
+        </View>
+      );
     }
 
     return notes.map((note, index) => (
@@ -94,20 +101,6 @@ export default function Index() {
     }
   };
 
-  const getSalutation = () => {
-    const hours = new Date().getHours();
-
-    if (hours >= 5 && hours < 12) {
-      return "Good Morning 🦖";
-    } else if (hours >= 12 && hours < 17) {
-      return "Good Afternoon 🦕";
-    } else if (hours >= 17 && hours < 21) {
-      return "Good Evening 🌋";
-    } else {
-      return "Good Night🌙";
-    }
-  };
-
   return (
     <SafeAreaView style={styles.homePageContainer}>
       <Text style={styles.title}>{getSalutation()}</Text>
@@ -144,7 +137,7 @@ export default function Index() {
           notes.length > 0 && styles.gridContainer,
         ]}
       >
-        <View>{renderDinotesInGridOrSeparator()}</View>
+        {renderDinotesInGridOrSeparator()}
       </ScrollView>
 
       <AddButton buttonClick={() => addNoteButtonClicked()} />
