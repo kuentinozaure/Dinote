@@ -31,7 +31,7 @@ export default function Chip({
       <Text style={isActive ? styles.tagTextActive : styles.tagTextInactive}>
         {title}
       </Text>
-      {infoElement && (
+      {infoElement ? (
         <View
           style={[
             styles.numberFilter,
@@ -46,7 +46,7 @@ export default function Chip({
             {infoElement}
           </Text>
         </View>
-      )}
+      ) : null}
     </TouchableOpacity>
   );
 }
