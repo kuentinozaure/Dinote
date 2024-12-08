@@ -12,6 +12,7 @@ import {
   getNotesFromDB,
   getTagsFromDB,
 } from "@/db/getter";
+import NoDinote from "@/components/no-dinote";
 
 export default function Index() {
   const db = useSQLiteContext();
@@ -52,7 +53,7 @@ export default function Index() {
 
   const renderDinotesInGridOrSeparator = () => {
     if (notes.length === 0) {
-      return <Text>No notes found</Text>;
+      return <NoDinote />;
     }
 
     return notes.map((note, index) => (
@@ -110,7 +111,6 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.homePageContainer}>
       <Text style={styles.title}>{getSalutation()}</Text>
-      {/*      <Text style={styles.title}>Dinote</Text> */}
 
       <View style={styles.tagFilterContainer}>
         <ScrollView
@@ -139,9 +139,12 @@ export default function Index() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.gridContainer}
+        contentContainerStyle={[
+          styles.dinotesScrollContainer,
+          notes.length > 0 && styles.gridContainer,
+        ]}
       >
-        {renderDinotesInGridOrSeparator()}
+        <View>{renderDinotesInGridOrSeparator()}</View>
       </ScrollView>
 
       <AddButton buttonClick={() => addNoteButtonClicked()} />
@@ -159,8 +162,6 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 40,
-    // fontSize: 40,
-    // fontWeight: "bold",
     color: "#FEFEFE",
     marginBottom: 16,
   },
@@ -174,9 +175,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
 
+  dinotesScrollContainer: {
+    width: "100%",
+  },
+
   gridContainer: {
     flexDirection: "row",
-    width: "100%",
     flexWrap: "wrap",
     gap: 8,
     justifyContent: "space-between",
