@@ -1,3 +1,4 @@
+import { Actions } from "@/enums/actions";
 import { ActionToRealize } from "@/interfaces/action-to-realize";
 import Groq from "groq-sdk";
 
@@ -16,10 +17,10 @@ export async function defineActionsToAchieve(
           Instructions:
 
           - Reply with an actions the app can do. The app can : 
-            - Import a file. The action to return should be ${Actions.IMPORT_FILE}
-            - Generate a quick note about a theme or a subject, the action to return should be ${Actions.GENERATE_NOTE}
-            - If user ask you a question, return ${Actions.ANSWER_QUESTION}
-            - If you don't know what to do, return ${Actions.UNKNOWN}
+            - Import a file. The action to return should be "${Actions.IMPORT_FILE}"
+            - Generate a quick note about a theme or a subject, the action to return should be "${Actions.GENERATE_NOTE}"
+            - If user ask you a question, return "${Actions.ANSWER_QUESTION}"
+            - If you don't know what to do, return "${Actions.UNKNOWN}"
           - Don't hallucinate
           - Reply with the following JSON structure:
           {

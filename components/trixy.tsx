@@ -51,7 +51,7 @@ export default function Trixy() {
           <TextInput
             placeholder="Ask me anything ..."
             onChangeText={(text) => onChangeText(text)}
-            onSubmitEditing={() => onSubmit()}
+            onSubmitEditing={async () => onSubmit()}
           >
             {inputText}
           </TextInput>
