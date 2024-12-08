@@ -22,8 +22,13 @@ export default function Note({ note }: NoteProps) {
           )}
         </Text>
 
-        <View style={styles.noteHeaderShareContainer}>
-          <Chip title={"Quizz"} />
+        <View
+          style={[
+            styles.noteHeaderShareContainer,
+            !note.tag && styles.noteHeaderWithoutTag,
+          ]}
+        >
+          {note.tag && <Chip title={note.tag} />}
           <Feather name="share" size={24} color="white" />
         </View>
       </View>
@@ -71,6 +76,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+
+  noteHeaderWithoutTag: {
+    justifyContent: "flex-end",
   },
 
   markdownContainer: {

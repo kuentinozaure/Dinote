@@ -17,6 +17,7 @@ import { insertNote } from "@/db/db";
 import { useSQLiteContext } from "expo-sqlite";
 import { randomUUID } from "expo-crypto";
 import { convertToMarkdown } from "@/ai/convert-to-markdown";
+import { generateNote } from "@/ai/generate-note";
 
 const API_URL =
   "https://innovative-jacinta-quentin-s-hobbys-d50ed36b.koyeb.app";
@@ -59,13 +60,38 @@ export default function CreateNote() {
 
     // If user want to generate a note
     if (data.action === Actions.GENERATE_NOTE) {
-      // TODO: Generate a note with ai
+      generateNoteByAi(userPrompt);
     }
 
     // If user want to answer a question about his prompt
     if (data.action === Actions.ANSWER_QUESTION) {
       answerUserQuestion(userPrompt);
     }
+  };
+
+  const generateNoteByAi = async (context: string) => {
+    setProcessingState("Dinote thinking ...");
+    const data = await generateNote(groq, context);
+    if (!data) {
+      return;
+    }
+    setProcessingState("Dinote is generating your note ...");
+
+    const newNote: NoteType = {
+      description: data?.description || "",
+      uri: "", // TODO: Save the file to the app's folder
+      fileName: "", // TODO: Save the file to the app's folder
+      textContent: data.markdownContent || "",
+      id: randomUUID(),
+      timeStamp: Date.now(),
+      markdownContent: data.markdownContent || "",
+      tag: data?.tag || "",
+      title: data?.title || "",
+    };
+
+    setProcessingState("Your note is ready");
+
+    setNote(newNote);
   };
 
   const importFile = async () => {
@@ -101,7 +127,7 @@ export default function CreateNote() {
         }
       );
 
-      setProcessingState("Dinote is processing your file ...");
+      setProcessingState("Dinote is working on your file ...");
 
       const [data, textToMarkdown] = await Promise.all([
         importNote(groq, response.data),
