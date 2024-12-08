@@ -1,4 +1,6 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { defineActionsToAchieve } from "@/ai/define-action-to-do";
+import { useGroqContext } from "@/context/groq-context";
+
 import { useState } from "react";
 import {
   Dimensions,
@@ -15,6 +17,7 @@ export default function Trixy() {
   const [expanded, setExpanded] = useState(false);
   const [inputText, setInputText] = useState("");
   const screenWidth = Dimensions.get("window").width;
+  const groq = useGroqContext();
 
   const generateExpandedStyle = () => {
     return (
@@ -33,9 +36,10 @@ export default function Trixy() {
     setExpanded(!expanded);
   };
 
-  const onSubmit = () => {
-    // ask ai to do something
-    console.log("Submit");
+  const onSubmit = async () => {
+    const actionToDo = await defineActionsToAchieve(groq, inputText);
+    console.log("actionToDo", actionToDo);
+    å;
   };
 
   return (
