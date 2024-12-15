@@ -1,21 +1,112 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import Chip from "./chip";
 import { Feather } from "@expo/vector-icons";
 import Markdown from "@ronradtke/react-native-markdown-display";
 import { Note as NoteType } from "@/interfaces/note";
 import { calculateDateFromTimeStamp } from "@/helpers/date.helper";
+import { useState } from "react";
 
 interface NoteProps {
   note: NoteType;
+  editionMode: boolean;
+  onNoteChange?: (note: NoteType) => void;
 }
 
-export default function Note({ note }: NoteProps) {
+interface NoteEditionForm {
+  titleValue: string;
+  contentValue: string;
+}
+
+export default function Note({ note, editionMode, onNoteChange }: NoteProps) {
+  const [noteEditionForm, setNoteEditionForm] = useState<NoteEditionForm>({
+    titleValue: note.title || "New note",
+    contentValue: note.markdownContent,
+  });
+
+  const onChangeTitleText = (text: string) => {
+    setNoteEditionForm((prev) => ({
+      ...prev,
+      titleValue: text,
+    }));
+
+    if (onNoteChange) {
+      onNoteChange({
+        ...note,
+        title: text,
+      });
+    }
+  };
+
+  const onChangeContentText = (text: string) => {
+    setNoteEditionForm((prev) => ({
+      ...prev,
+      contentValue: text,
+    }));
+
+    if (onNoteChange) {
+      onNoteChange({
+        ...note,
+        markdownContent: text,
+      });
+    }
+  };
+
+  /**
+   * This function will render the title text in edition mode or not
+   * @returns a jsx element with the title text or a text input
+   */
+  const renderTitleTextEdition = () => {
+    if (!editionMode) {
+      return (
+        <Text style={styles.noteHeaderNameText}>
+          {noteEditionForm.titleValue}
+        </Text>
+      );
+    } else {
+      return (
+        <TextInput
+          style={styles.noteHeaderNameText}
+          value={noteEditionForm.titleValue}
+          onChangeText={(text) => onChangeTitleText(text)}
+        />
+      );
+    }
+  };
+
+  const renderMarkdownTextEdition = () => {
+    if (!editionMode) {
+      return (
+        <Markdown
+          style={{
+            text: {
+              color: "#e5e5e5",
+              fontSize: 24,
+            },
+          }}
+        >
+          {noteEditionForm.contentValue}
+        </Markdown>
+      );
+    } else {
+      return (
+        <TextInput
+          style={{
+            color: "#e5e5e5",
+            fontSize: 24,
+          }}
+          value={noteEditionForm.contentValue}
+          placeholder="Type your note here"
+          onChangeText={(text) => onChangeContentText(text)}
+          multiline
+        />
+      );
+    }
+  };
+
   return (
     <View style={styles.noteContainer}>
       <View style={styles.noteHeaderContainer}>
-        <Text style={styles.noteHeaderNameText}>
-          {note.title.length > 0 ? note.title : "New note"}
-        </Text>
+        {renderTitleTextEdition()}
         <Text style={styles.noteHeaderDateText}>
           {calculateDateFromTimeStamp(
             note.timeStamp > 0 ? note.timeStamp : Date.now()
@@ -34,16 +125,7 @@ export default function Note({ note }: NoteProps) {
       </View>
 
       <View style={styles.markdownContainer}>
-        <Markdown
-          style={{
-            text: {
-              color: "#e5e5e5",
-              fontSize: 24,
-            },
-          }}
-        >
-          {note.markdownContent}
-        </Markdown>
+        {renderMarkdownTextEdition()}
       </View>
     </View>
   );

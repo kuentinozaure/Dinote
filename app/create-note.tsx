@@ -26,7 +26,7 @@ export default function CreateNote() {
   const groq = useGroqContext();
   const db = useSQLiteContext();
   const [note, setNote] = useState<NoteType>({
-    title: "",
+    title: "New note",
     description: "",
     tag: "",
     uri: "",
@@ -43,7 +43,9 @@ export default function CreateNote() {
   };
 
   const onSaveNotePress = () => {
-    insertNote(db, note);
+    const noteToSave = { ...note, timeStamp: Date.now(), id: randomUUID() };
+    setNote(noteToSave);
+    insertNote(db, noteToSave);
     goBack();
   };
 
@@ -90,7 +92,6 @@ export default function CreateNote() {
     };
 
     setProcessingState("Your note is ready");
-
     setNote(newNote);
   };
 
@@ -167,6 +168,12 @@ export default function CreateNote() {
     console.log(data);
   };
 
+  const onNoteChange = (note: NoteType) => {
+    setNote({
+      ...note,
+    });
+  };
+
   return (
     <SafeAreaView style={styles.createNoteContainer}>
       <View style={styles.navigationHeader}>
@@ -186,7 +193,11 @@ export default function CreateNote() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Note note={note} />
+        <Note
+          note={note}
+          editionMode={true}
+          onNoteChange={(note) => onNoteChange(note)}
+        />
       </ScrollView>
 
       <Trixy
